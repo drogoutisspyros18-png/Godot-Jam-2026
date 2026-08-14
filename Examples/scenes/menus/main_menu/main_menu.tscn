@@ -1,11 +1,16 @@
 [gd_scene format=3 uid="uid://6o73ftxv4bub"]
 
-[ext_resource type="PackedScene" path="res://addons/maaacks_menus_template/base/nodes/menus/main_menu/main_menu.tscn" id="1_ijkj8"]
-[ext_resource type="Script" path="res://Examples/scenes/menus/main_menu/main_menu.gd" id="2_qeqxp"]
-[ext_resource type="PackedScene" path="res://Examples/scenes/windows/main_menu_options_window.tscn" id="3_wwgth"]
-[ext_resource type="PackedScene" path="res://Examples/scenes/windows/main_menu_credits_window.tscn" id="4_428l0"]
+[ext_resource type="PackedScene" uid="uid://c6k5nnpbypshi" path="res://addons/maaacks_menus_template/base/nodes/menus/main_menu/main_menu.tscn" id="1_ijkj8"]
+[ext_resource type="Script" uid="uid://wsepsifvkwkw" path="res://Examples/scenes/menus/main_menu/main_menu.gd" id="2_qeqxp"]
+[ext_resource type="Theme" uid="uid://bb6vwl0h1flws" path="res://Assets/FlatUI4/kenneyUI-blue.tres" id="2_wwgth"]
+[ext_resource type="PackedScene" uid="uid://cqxxmt12xinaq" path="res://Examples/scenes/windows/main_menu_options_window.tscn" id="3_wwgth"]
+[ext_resource type="PackedScene" uid="uid://jg0avrnkktpt" path="res://Examples/scenes/windows/main_menu_credits_window.tscn" id="4_428l0"]
 
 [node name="MainMenu" unique_id=869232425 instance=ExtResource("1_ijkj8")]
+theme = ExtResource("2_wwgth")
 script = ExtResource("2_qeqxp")
 options_packed_scene = ExtResource("3_wwgth")
 credits_packed_scene = ExtResource("4_428l0")
+
+[node name="TitleLabel" parent="MenuContainer/TitleMargin/TitleContainer" parent_id_path=PackedInt32Array(556427956) index="0" unique_id=359406872]
+text = "godot-wild-96"
