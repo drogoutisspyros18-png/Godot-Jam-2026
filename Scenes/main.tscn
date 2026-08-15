@@ -1,8 +1,22 @@
 [gd_scene format=3 uid="uid://c5qnpxjqoo2cg"]
 
 [ext_resource type="PackedScene" uid="uid://bbwl1kdvvlsrm" path="res://Scenes/Player.tscn" id="1_jjgbg"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="2_344ge"]
 [ext_resource type="Script" uid="uid://cyh0d64pfygbl" path="res://addons/maaacks_menus_template/base/nodes/utilities/pause_menu_controller.gd" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://buiayluw36lk4" path="res://Examples/scenes/windows/pause_menu.tscn" id="3_8gbba"]
+[ext_resource type="Script" uid="uid://nui6q5yj1nyi" path="res://DestructiblePolygon2D.gd" id="4_jjvhh"]
+[ext_resource type="Script" uid="uid://b8u0q22wwch8u" path="res://Scenes/rigid_body_2d.gd" id="5_kry3j"]
+[ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="7_ynf5e"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="8_hptm8"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_t06ld"]
+size = Vector2(50, 50)
+
+[sub_resource type="Gradient" id="Gradient_t06ld"]
+colors = PackedColorArray(0.7411765, 0.7411765, 0.7411765, 1, 1, 1, 1, 0.25882354)
+
+[sub_resource type="Resource" id="Resource_d1ilt"]
+script = ExtResource("8_hptm8")
 
 [node name="Main" type="Node2D" unique_id=654782643]
 
@@ -17,6 +31,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+metadata/_edit_use_anchors_ = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Control" unique_id=124309866]
 layout_mode = 1
@@ -25,10 +40,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -492.25
-offset_top = -11.5
-offset_right = 492.25
-offset_bottom = 11.5
+offset_left = -499.0
+offset_top = -9.0
+offset_right = 485.5
+offset_bottom = 14.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "TESTING"
@@ -37,7 +52,70 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1359857755]
+physics_interpolation_mode = 1
+top_level = true
+position = Vector2(297, -87)
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=256781465]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("2_344ge")
+metadata/_custom_type_script = "uid://bd046eokvcnu2"
 
 [node name="Node" type="Node" parent="." unique_id=1431305831]
 script = ExtResource("2_bo1nx")
 pause_menu_packed = ExtResource("3_8gbba")
+
+[node name="DestructiblePolygon2D" type="Node2D" parent="." unique_id=30060722]
+position = Vector2(381, -104)
+script = ExtResource("4_jjvhh")
+
+[node name="Polygon2D" type="Polygon2D" parent="DestructiblePolygon2D" unique_id=427256277]
+position = Vector2(1, 2)
+polygon = PackedVector2Array(-358, 49, 178, 47, 184, 670, -371, 637)
+
+[node name="RigidBody2D" type="RigidBody2D" parent="." unique_id=1206372269 node_paths=PackedStringArray("dest_polygon")]
+position = Vector2(297, -87)
+script = ExtResource("5_kry3j")
+dest_polygon = NodePath("../DestructiblePolygon2D")
+
+[node name="Sprite2D" type="Sprite2D" parent="RigidBody2D" unique_id=1435517454]
+texture = SubResource("PlaceholderTexture2D_t06ld")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="RigidBody2D" unique_id=259707315]
+polygon = PackedVector2Array(-25, 25, -25, -25, 25, -25, 25, 25)
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="RigidBody2D" unique_id=1679216114]
+position = Vector2(0, 25)
+amount = 64
+emission_shape = 3
+emission_rect_extents = Vector2(25, 2)
+gravity = Vector2(0, -62.49)
+scale_amount_min = 1.35
+scale_amount_max = 2.9
+color = Color(0.74138474, 0.7413847, 0.74138457, 1)
+color_ramp = SubResource("Gradient_t06ld")
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="RigidBody2D" unique_id=713945828]
+position = Vector2(0, 25)
+amount = 64
+emission_shape = 3
+emission_rect_extents = Vector2(25, 2)
+gravity = Vector2(0, -62.49)
+radial_accel_min = -31.53
+radial_accel_max = 53.94
+tangential_accel_min = -22.41
+tangential_accel_max = 25.73
+scale_amount_min = 1.35
+scale_amount_max = 2.9
+color = Color(0.74138474, 0.7413847, 0.74138457, 1)
+color_ramp = SubResource("Gradient_t06ld")
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=1246181654 node_paths=PackedStringArray("follow_target")]
+top_level = true
+position = Vector2(297, -87)
+script = ExtResource("7_ynf5e")
+follow_mode = 5
+follow_target = NodePath("../RigidBody2D")
+tween_resource = SubResource("Resource_d1ilt")
+metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
