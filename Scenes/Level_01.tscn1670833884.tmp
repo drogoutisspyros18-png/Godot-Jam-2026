@@ -49,22 +49,11 @@ follow_target = NodePath("../Player")
 tween_resource = SubResource("Resource_2jryf")
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
 
-[node name="DestructiblePolygon2D" type="Node2D" parent="." unique_id=732309255]
-position = Vector2(364, 6)
+[node name="DestructiblePolygon2D" type="Node2D" parent="." unique_id=566893068]
 script = ExtResource("7_fmco7")
-collidable = true
 metadata/_custom_type_script = "uid://nui6q5yj1nyi"
 
-[node name="Polygon2D" type="Polygon2D" parent="DestructiblePolygon2D" unique_id=1346355878]
-polygon = PackedVector2Array(-83, -141.66635, -82.33333, 93.000336, 92.33334, 92.33365, 111, -140.33301)
-uv = PackedVector2Array(-83, -141.66635, -82.33333, 93.000336, 227.66669, 90.33365, 227.66669, -146.33301)
-
-[node name="DestructiblePolygon2D2" type="Node2D" parent="." unique_id=1549467812]
-position = Vector2(0, -131)
-script = ExtResource("7_fmco7")
-collidable = true
-metadata/_custom_type_script = "uid://nui6q5yj1nyi"
-
-[node name="Polygon2D" type="Polygon2D" parent="DestructiblePolygon2D2" unique_id=1988246406]
-polygon = PackedVector2Array(-641.333, -95.000046, -597.333, 83.666626, 578.667, 66.33328, 569.3336, -102.33338)
-uv = PackedVector2Array(-83, -141.66635, -82.33333, 93.000336, 227.66669, 90.33365, 227.66669, -146.33301)
+[node name="Polygon2D" type="Polygon2D" parent="DestructiblePolygon2D" unique_id=2071628533]
+position = Vector2(1310, -31)
+polygon = PackedVector2Array(-1228.6664, -92.99968, -217.33301, -90.333015, -207.33301, 169.66699, -1217.333, 141.00034, -1207.333, -80.99968)
+uv = PackedVector2Array(-1228.6664, -92.99968, -217.33301, -90.333015, -207.33301, 169.66699, -1217.333, 141.00034, -1207.333, -80.99968)

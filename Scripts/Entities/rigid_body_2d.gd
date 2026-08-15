@@ -1,15 +1,22 @@
-extends RigidBody2D
+extends CollisionPolygon2D
 
-@export var dest_polygon: DestructiblePolygon2D
+@export var timer: Timer
 
-@onready var shape: CollisionPolygon2D = $CollisionPolygon2D
+var dest_polygon: DestructiblePolygon2D
+var enabled: bool = false
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	timer.connect("timeout", disable)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	dest_polygon.destruct(shape.polygon, global_position)
+func _process(_delta: float) -> void:
+	if enabled:
+		dest_polygon.destruct(self.polygon, global_position)
+		timer.start()
+
+
+func disable():
+	if enabled:
+		enabled = false

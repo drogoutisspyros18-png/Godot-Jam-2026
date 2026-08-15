@@ -2,18 +2,22 @@
 
 [ext_resource type="Script" uid="uid://ctlw1o7prtlkw" path="res://Scripts/Entities/player.gd" id="1_rpqav"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7j6vg"]
-radius = 25.0
-height = 50.0
-
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_t06ld"]
 size = Vector2(50, 50)
 
 [node name="Player" type="CharacterBody2D" unique_id=1119791081]
 script = ExtResource("1_rpqav")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=135052393]
-shape = SubResource("CapsuleShape2D_7j6vg")
-
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1596069686]
 texture = SubResource("PlaceholderTexture2D_t06ld")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=942020420]
+polygon = PackedVector2Array(25, 25, 25, -25, -25, -25, -25, 25)
+
+[node name="BiteHitbox" type="Area2D" parent="." unique_id=364550375]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="BiteHitbox" unique_id=610641741]
+polygon = PackedVector2Array(35, 35, 35, -35, -35, -35, -35, 35)
+
+[node name="RayCast2D" type="RayCast2D" parent="." unique_id=1386313435]
+target_position = Vector2(100, 0)

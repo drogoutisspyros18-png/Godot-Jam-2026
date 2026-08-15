@@ -53,6 +53,7 @@ vertical_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1359857755]
 physics_interpolation_mode = 1
+top_level = true
 position = Vector2(297, -87)
 
 [node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=256781465]
@@ -65,7 +66,7 @@ metadata/_custom_type_script = "uid://bd046eokvcnu2"
 script = ExtResource("2_bo1nx")
 pause_menu_packed = ExtResource("3_8gbba")
 
-[node name="DestructiblePolygon2D" type="Node2D" parent="." unique_id=30060722]
+[node name="DestructiblePolygon2D" type="Node2D" parent="." unique_id=30060722 groups=["Destructible"]]
 position = Vector2(381, -104)
 script = ExtResource("4_jjvhh")
 
@@ -73,10 +74,9 @@ script = ExtResource("4_jjvhh")
 position = Vector2(1, 2)
 polygon = PackedVector2Array(-358, 49, 178, 47, 184, 670, -371, 637)
 
-[node name="RigidBody2D" type="RigidBody2D" parent="." unique_id=1206372269 node_paths=PackedStringArray("dest_polygon")]
+[node name="RigidBody2D" type="RigidBody2D" parent="." unique_id=1206372269]
 position = Vector2(297, -87)
 script = ExtResource("5_kry3j")
-dest_polygon = NodePath("../DestructiblePolygon2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="RigidBody2D" unique_id=1435517454]
 texture = SubResource("PlaceholderTexture2D_t06ld")
