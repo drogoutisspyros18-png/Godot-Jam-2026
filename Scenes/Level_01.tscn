@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://3ln3ph3m47ex"]
+
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="1_in6ly"]
+[ext_resource type="Script" uid="uid://cyh0d64pfygbl" path="res://addons/maaacks_menus_template/base/nodes/utilities/pause_menu_controller.gd" id="2_e0dve"]
+[ext_resource type="PackedScene" uid="uid://buiayluw36lk4" path="res://Examples/scenes/windows/pause_menu.tscn" id="3_egvei"]
+[ext_resource type="PackedScene" uid="uid://bbwl1kdvvlsrm" path="res://Scenes/Player.tscn" id="4_e0dve"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_t06ld"]
+size = Vector2(600, 200)
+
+[node name="Level01" type="Node2D" unique_id=2069724574]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=344694045]
+physics_interpolation_mode = 1
+top_level = true
+position = Vector2(297, -87)
+
+[node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1398091811]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("1_in6ly")
+metadata/_custom_type_script = "uid://bd046eokvcnu2"
+
+[node name="Node" type="Node" parent="." unique_id=1733680203]
+script = ExtResource("2_e0dve")
+pause_menu_packed = ExtResource("3_egvei")
+
+[node name="Player" parent="." unique_id=1494138135 instance=ExtResource("4_e0dve")]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1849958722]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=1937014291]
+position = Vector2(0, 187)
+polygon = PackedVector2Array(-300, 100, 300, 100, 300, -100, -300, -100)
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/CollisionPolygon2D" unique_id=1314524876]
+texture = SubResource("PlaceholderTexture2D_t06ld")

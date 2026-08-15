@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="2_344ge"]
 [ext_resource type="Script" uid="uid://cyh0d64pfygbl" path="res://addons/maaacks_menus_template/base/nodes/utilities/pause_menu_controller.gd" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://buiayluw36lk4" path="res://Examples/scenes/windows/pause_menu.tscn" id="3_8gbba"]
-[ext_resource type="Script" uid="uid://nui6q5yj1nyi" path="res://DestructiblePolygon2D.gd" id="4_jjvhh"]
-[ext_resource type="Script" uid="uid://b8u0q22wwch8u" path="res://Scenes/rigid_body_2d.gd" id="5_kry3j"]
+[ext_resource type="Script" uid="uid://nui6q5yj1nyi" path="res://Scripts/Reusable/DestructiblePolygon2D.gd" id="4_jjvhh"]
+[ext_resource type="Script" uid="uid://b8u0q22wwch8u" path="res://Scripts/Entities/rigid_body_2d.gd" id="5_kry3j"]
 [ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="7_ynf5e"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="8_hptm8"]
 
@@ -53,7 +53,6 @@ vertical_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1359857755]
 physics_interpolation_mode = 1
-top_level = true
 position = Vector2(297, -87)
 
 [node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=256781465]
