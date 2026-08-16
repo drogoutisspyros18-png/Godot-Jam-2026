@@ -9,11 +9,11 @@ extends Node2D
 	set = set_collidable
 ## If [code]true[/code], the node is freed automatically when destructed completely.
 @export var free_when_empty: bool
-@export var collision_layer: int = 2
+@export_flags_2d_physics var collision_layer: int = 1
 ## A higher value increases performance, but reduces visual and area calculation accuracy.
 @export_range(0, 16) var simplification := 8.0
 
-@onready var _has_been_collidable := collidable # <-- Add this line back right here!
+@onready var _has_been_collidable := collidable
 
 
 func _ready():

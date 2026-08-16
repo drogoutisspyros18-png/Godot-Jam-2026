@@ -6,27 +6,14 @@
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_t06ld"]
 size = Vector2(50, 50)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7j6vg"]
-size = Vector2(80, 80)
-
 [node name="Player" type="CharacterBody2D" unique_id=1119791081]
 script = ExtResource("1_rpqav")
-speed = null
-jump_velocity = null
-dash_speed = null
-dash_duration = null
-bite_radius = null
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1596069686]
 texture = SubResource("PlaceholderTexture2D_t06ld")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=942020420]
 polygon = PackedVector2Array(25, 25, 25, -25, -25, -25, -25, 25)
-
-[node name="ShapeCast2D" type="ShapeCast2D" parent="." unique_id=1713578468]
-material = ExtResource("2_kyqiw")
-shape = SubResource("RectangleShape2D_7j6vg")
-target_position = Vector2(0, 0)
 
 [node name="GhostTerrainRenderer" type="Polygon2D" parent="." unique_id=1708138398]
 material = ExtResource("2_kyqiw")

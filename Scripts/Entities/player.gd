@@ -60,13 +60,14 @@ func _process_normal_movement(delta: float) -> void:
 
 func _start_dash() -> void:
 	var dir := Vector2(Input.get_axis("left", "right"), Input.get_axis("up", "down")).normalized()
+	# this code is confusing, should just default to last dir pressed.
 	if dir == Vector2.ZERO:
 		dir = Vector2(1.0 if velocity.x >= 0.0 else -1.0, 0.0)
 	dash_direction = dir
 
 	# Disable collisions so player glides seamlessly through the carved hole
-	set_collision_mask_value(TERRAIN_LAYER, false)
-	set_collision_mask_value(DESTRUCTIBLE_LAYER, false)
+	# set_collision_mask_value(TERRAIN_LAYER, false)
+	# set_collision_mask_value(DESTRUCTIBLE_LAYER, false)
 
 	_carve_dash_path()
 
@@ -82,8 +83,8 @@ func _process_dash(delta: float) -> void:
 func _end_dash() -> void:
 	dash_timer = 0.0
 	velocity *= 0.5
-	set_collision_mask_value(TERRAIN_LAYER, true)
-	set_collision_mask_value(DESTRUCTIBLE_LAYER, true)
+	# set_collision_mask_value(TERRAIN_LAYER, true)
+	# set_collision_mask_value(DESTRUCTIBLE_LAYER, true)
 	ghost_polygon.hide() # Reset the shader state without freeing memory
 
 
@@ -105,9 +106,10 @@ func _carve_dash_path() -> void:
 	var hit_indestructible = space_state.intersect_ray(query_indestructible)
 
 	if hit_indestructible:
+		print("hit indestructible result ", hit_indestructible)
 		var dist_to_wall = global_position.distance_to(hit_indestructible.position)
 		# Clamp the maximum dash distance so we never cut past the indestructible bounds
-		max_dash_distance = min(max_dash_distance, dist_to_wall)
+		max_dash_distance = max(max_dash_distance, dist_to_wall)
 
 	# Dynamically set the duration so the player stops exactly at the wall/limit
 	dash_timer = max_dash_distance / dash_speed
@@ -123,6 +125,7 @@ func _carve_dash_path() -> void:
 	var hit_destructible = space_state.intersect_ray(query_destructible)
 
 	if hit_destructible and hit_destructible.collider is StaticBody2D:
+		print("hit destructible result ", hit_destructible)
 		var collider = hit_destructible.collider
 		var dest: DestructiblePolygon2D = collider.get_meta("destruct_root", null)
 
