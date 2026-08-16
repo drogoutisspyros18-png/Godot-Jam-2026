@@ -116,7 +116,6 @@ func _carve_dash_path() -> void:
 	var hit_indestructible = space_state.intersect_ray(query_indestructible)
 
 	if hit_indestructible:
-		print("hit indestructible result ", hit_indestructible)
 		var dist_to_wall = global_position.distance_to(hit_indestructible.position)
 		# Clamp the maximum dash distance so we never cut past the indestructible bounds
 		max_dash_distance = max(max_dash_distance, dist_to_wall)
@@ -135,7 +134,6 @@ func _carve_dash_path() -> void:
 	var hit_destructible = space_state.intersect_ray(query_destructible)
 
 	if hit_destructible and hit_destructible.collider is StaticBody2D:
-		print("hit destructible result ", hit_destructible)
 		var collider = hit_destructible.collider
 		var dest: DestructiblePolygon2D = collider.get_meta("destruct_root", null)
 
