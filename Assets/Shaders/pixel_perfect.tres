@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://da1ndsj0frvyv"]
+
+[ext_resource type="Shader" uid="uid://jeiqdpbr87rn" path="res://Assets/Shaders/pixel_perfect.gdshader" id="1_o7h26"]
+
+[resource]
+shader = ExtResource("1_o7h26")
+shader_parameter/pixel_size = 16.0
+shader_parameter/handle_edges = false

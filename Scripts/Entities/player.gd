@@ -8,18 +8,20 @@ const MAX_ROOM_SIZE = 4000.0 # Maximum distance to raycast for the indestructibl
 @export var jump_velocity: float = -400.0
 @export var dash_speed: float = 800.0
 @export var dash_duration: float = 0.25 # Base max duration if nothing is hit
-@export var bite_radius: float = 32.0
+@export var bite_radius: float = 32
 
 var dash_direction: Vector2 = Vector2.ZERO
 var dash_timer: float = 0.0
 var is_dead: bool = false
 var _vfx_tween: Tween
 
+@onready var particles: Node2D = $Particles
 # Visual Pool for Web Optimization
 @onready var ghost_polygon: Polygon2D = $GhostTerrainRenderer
 
 
 func _ready() -> void:
+	particles.set("enabled", false)
 	ghost_polygon.hide()
 	ghost_polygon.top_level = true # Decouples transform from player movement
 
@@ -60,15 +62,11 @@ func _process_normal_movement(delta: float) -> void:
 
 func _start_dash() -> void:
 	var dir := Vector2(Input.get_axis("left", "right"), Input.get_axis("up", "down")).normalized()
-	# this code is confusing, should just default to last dir pressed.
+	#NOTE: this code is confusing, should just default to last dir pressed.
 	if dir == Vector2.ZERO:
 		dir = Vector2(1.0 if velocity.x >= 0.0 else -1.0, 0.0)
 	dash_direction = dir
-
-	# Disable collisions so player glides seamlessly through the carved hole
-	# set_collision_mask_value(TERRAIN_LAYER, false)
-	# set_collision_mask_value(DESTRUCTIBLE_LAYER, false)
-
+	particles.position = dash_direction * bite_radius
 	_carve_dash_path()
 
 
@@ -81,6 +79,7 @@ func _process_dash(delta: float) -> void:
 
 
 func _end_dash() -> void:
+	particles.set("enabled", false)
 	dash_timer = 0.0
 	velocity *= 0.5
 	# set_collision_mask_value(TERRAIN_LAYER, true)
@@ -160,6 +159,7 @@ func _carve_dash_path() -> void:
 
 
 func _trigger_dash_vfx(target_poly: Polygon2D, duration: float, max_dist: float) -> void:
+	particles.set("enabled", true)
 	# 1. Copy visual data directly to the pool node (no instantiation)
 	ghost_polygon.polygon = target_poly.polygon
 	ghost_polygon.uv = target_poly.uv

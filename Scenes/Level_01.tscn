@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://3ln3ph3m47ex"]
 
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="1_in6ly"]
+[ext_resource type="Material" uid="uid://da1ndsj0frvyv" path="res://Assets/Shaders/pixel_perfect.tres" id="1_sae1u"]
 [ext_resource type="Script" uid="uid://cyh0d64pfygbl" path="res://addons/maaacks_menus_template/base/nodes/utilities/pause_menu_controller.gd" id="2_e0dve"]
 [ext_resource type="PackedScene" uid="uid://buiayluw36lk4" path="res://Examples/scenes/windows/pause_menu.tscn" id="3_egvei"]
 [ext_resource type="PackedScene" uid="uid://bbwl1kdvvlsrm" path="res://Scenes/Player.tscn" id="4_e0dve"]
@@ -21,20 +22,21 @@ metadata/_custom_type_script = "uid://dimvdouy8g0sv"
 
 [node name="Level01" type="Node2D" unique_id=2069724574]
 
+[node name="Node" type="Node" parent="." unique_id=1733680203]
+script = ExtResource("2_e0dve")
+pause_menu_packed = ExtResource("3_egvei")
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=344694045]
 physics_interpolation_mode = 1
 top_level = true
-offset = Vector2(1.6441394, 1.5460315)
+material = ExtResource("1_sae1u")
+offset = Vector2(-0.014217608, -0.14147642)
 
 [node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1398091811]
 process_priority = 300
 process_physics_priority = 300
 script = ExtResource("1_in6ly")
 metadata/_custom_type_script = "uid://bd046eokvcnu2"
-
-[node name="Node" type="Node" parent="." unique_id=1733680203]
-script = ExtResource("2_e0dve")
-pause_menu_packed = ExtResource("3_egvei")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1849958722]
 
@@ -47,9 +49,11 @@ texture = SubResource("PlaceholderTexture2D_t06ld")
 
 [node name="PhantomCamera2D" type="Node2D" parent="." unique_id=48598533 node_paths=PackedStringArray("follow_target")]
 top_level = true
+material = ExtResource("1_sae1u")
 script = ExtResource("5_48sdu")
 follow_mode = 5
 follow_target = NodePath("../Player")
+snap_to_pixel = true
 tween_resource = SubResource("Resource_2jryf")
 noise = SubResource("Resource_fmco7")
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
