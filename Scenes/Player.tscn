@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bbwl1kdvvlsrm"]
 
 [ext_resource type="Script" uid="uid://df5hqglfp2l6x" path="res://Scripts/Entities/player.gd" id="1_rpqav"]
-[ext_resource type="Material" uid="uid://cjw4grl0qg88q" path="res://Assets/Shaders/GhostTerrainRenderer.tres" id="2_kyqiw"]
 [ext_resource type="Texture2D" uid="uid://bgjm0golja3bl" path="res://Assets/Free Smoke Fx Pixel 2/Free Smoke Fx  Pixel 05.png" id="3_gntrk"]
 [ext_resource type="Script" uid="uid://n3my5jxw513q" path="res://Scripts/Reusable/particles.gd" id="3_nn08x"]
 [ext_resource type="Texture2D" uid="uid://hkn5mitnrcct" path="res://Assets/Free Smoke Fx Pixel 2/Free Smoke Fx  Pixel 04.png" id="4_dewec"]
@@ -562,6 +561,7 @@ animations = [{
 
 [node name="Player" type="CharacterBody2D" unique_id=1119791081]
 script = ExtResource("1_rpqav")
+bite_radius = 26.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1596069686]
 texture = SubResource("PlaceholderTexture2D_t06ld")
@@ -569,14 +569,10 @@ texture = SubResource("PlaceholderTexture2D_t06ld")
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=942020420]
 polygon = PackedVector2Array(25, 25, 25, -25, -25, -25, -25, 25)
 
-[node name="GhostTerrainRenderer" type="Polygon2D" parent="." unique_id=1708138398]
-material = ExtResource("2_kyqiw")
-
 [node name="Particles" type="Node2D" parent="." unique_id=1631654729]
 script = ExtResource("3_nn08x")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="Particles" unique_id=690492347]
-position = Vector2(0, 12)
 amount = 64
 lifetime = 0.5
 local_coords = true
@@ -594,7 +590,6 @@ color = Color(1, 1, 1, 0.35686275)
 color_ramp = SubResource("Gradient_kyqiw")
 
 [node name="CPUParticles2D2" type="CPUParticles2D" parent="Particles" unique_id=2000425549]
-position = Vector2(0, 12)
 amount = 64
 lifetime = 0.5
 local_coords = true
@@ -616,14 +611,14 @@ color = Color(1, 1, 1, 0.35686275)
 color_ramp = SubResource("Gradient_kyqiw")
 
 [node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="Particles" unique_id=85385910]
-position = Vector2(-32, 37)
+position = Vector2(-26, 26)
 rotation = 1.5707964
 sprite_frames = SubResource("SpriteFrames_t06ld")
 animation = &"slide"
 frame_progress = 0.16455989
 
 [node name="AnimatedSprite2D3" type="AnimatedSprite2D" parent="Particles" unique_id=2003495502]
-position = Vector2(32, 37)
+position = Vector2(26, 26)
 rotation = -1.5707964
 sprite_frames = SubResource("SpriteFrames_t06ld")
 animation = &"slide"

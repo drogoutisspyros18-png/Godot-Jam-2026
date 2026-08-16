@@ -28,8 +28,9 @@ void fragment() {
 	// Check if this pixel lives inside the carved rectangle
 	bool inside_tunnel = (dist_side <= bite_radius) && (dist_along >= 0.0) && (dist_along <= dash_length);
 	
-	// If it is inside the tunnel, and the player's progress has passed it, erase it
-	if (inside_tunnel && dist_along <= (progress * dash_length)) {
+// If it is inside the tunnel, and the player's progress has passed it, erase it
+	// Adding bite_radius pushes the discard threshold forward to uncover the whole sprite
+	if (inside_tunnel && dist_along <= (progress * dash_length) + bite_radius) {
 		discard;
 	}
 }

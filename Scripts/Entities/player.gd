@@ -17,7 +17,7 @@ var _vfx_tween: Tween
 
 @onready var particles: Node2D = $Particles
 # Visual Pool for Web Optimization
-@onready var ghost_polygon: Polygon2D = $GhostTerrainRenderer
+@onready var ghost_polygon: Polygon2D = %GhostTerrainRenderer
 
 
 func _ready() -> void:
@@ -44,6 +44,17 @@ func _physics_process(delta: float) -> void:
 		_process_normal_movement(delta)
 
 	move_and_slide()
+
+
+func apply_hit_stop(duration_seconds: float):
+	# Freeze the engine
+	Engine.time_scale = 0.0
+
+	# Create a timer that ignores Engine.time_scale (process_always = true, process_in_physics = false, ignore_time_scale = true)
+	await get_tree().create_timer(duration_seconds, true, false, true).timeout
+
+	# Restore normal time
+	Engine.time_scale = 1.0
 
 
 func _process_normal_movement(delta: float) -> void:
@@ -129,6 +140,7 @@ func _carve_dash_path() -> void:
 		var dest: DestructiblePolygon2D = collider.get_meta("destruct_root", null)
 
 		if dest:
+			await apply_hit_stop(0.125)
 			# The Polygon2D visual is the parent of the StaticBody2D
 			var target_poly = collider.get_parent() as Polygon2D
 			if target_poly:
