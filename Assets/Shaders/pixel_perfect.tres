@@ -4,5 +4,5 @@
 
 [resource]
 shader = ExtResource("1_o7h26")
-shader_parameter/pixel_size = 16.0
-shader_parameter/handle_edges = false
+shader_parameter/pixel_size = 4.0
+shader_parameter/base_resolution = Vector2(1920, 1080)
