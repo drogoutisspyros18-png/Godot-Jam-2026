@@ -9,6 +9,7 @@ extends Node2D
 	set = set_collidable
 ## If [code]true[/code], the node is freed automatically when destructed completely.
 @export var free_when_empty: bool
+@export var collision_layer: int = 2
 ## A higher value increases performance, but reduces visual and area calculation accuracy.
 @export_range(0, 16) var simplification := 8.0
 
@@ -108,7 +109,7 @@ func update_bounds_and_area(polygon_2d: Polygon2D, polygon: PackedVector2Array) 
 func add_collision_polygon(polygon_2d: Polygon2D):
 	var static_body_2d = StaticBody2D.new()
 	var collision_polygon_2d = CollisionPolygon2D.new()
-
+	static_body_2d.collision_layer = self.collision_layer
 	collision_polygon_2d.polygon = polygon_2d.polygon
 
 	# Stamp a direct reference to the DestructiblePolygon2D root node

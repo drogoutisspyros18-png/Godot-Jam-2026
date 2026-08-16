@@ -17,7 +17,6 @@ script = ExtResource("6_fmco7")
 [node name="Level01" type="Node2D" unique_id=2069724574]
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=344694045]
-physics_interpolation_mode = 1
 top_level = true
 
 [node name="PhantomCameraHost" type="Node" parent="Camera2D" unique_id=1398091811]
@@ -30,8 +29,6 @@ metadata/_custom_type_script = "uid://bd046eokvcnu2"
 script = ExtResource("2_e0dve")
 pause_menu_packed = ExtResource("3_egvei")
 
-[node name="Player" parent="." unique_id=1494138135 instance=ExtResource("4_e0dve")]
-
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1849958722]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=1937014291]
@@ -41,23 +38,12 @@ polygon = PackedVector2Array(-300, 100, 300, 100, 300, -100, -300, -100)
 [node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/CollisionPolygon2D" unique_id=1314524876]
 texture = SubResource("PlaceholderTexture2D_t06ld")
 
-[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=48598533 node_paths=PackedStringArray("follow_target")]
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=48598533]
 top_level = true
 script = ExtResource("5_48sdu")
 follow_mode = 5
-follow_target = NodePath("../Player")
 tween_resource = SubResource("Resource_2jryf")
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
-
-[node name="DestructiblePolygon2D" type="Node2D" parent="." unique_id=732309255]
-position = Vector2(364, 6)
-script = ExtResource("7_fmco7")
-collidable = true
-metadata/_custom_type_script = "uid://nui6q5yj1nyi"
-
-[node name="Polygon2D" type="Polygon2D" parent="DestructiblePolygon2D" unique_id=1346355878]
-polygon = PackedVector2Array(-83, -141.66635, -82.33333, 93.000336, 92.33334, 92.33365, 111, -140.33301)
-uv = PackedVector2Array(-83, -141.66635, -82.33333, 93.000336, 227.66669, 90.33365, 227.66669, -146.33301)
 
 [node name="DestructiblePolygon2D2" type="Node2D" parent="." unique_id=1549467812]
 position = Vector2(0, -131)
@@ -66,5 +52,22 @@ collidable = true
 metadata/_custom_type_script = "uid://nui6q5yj1nyi"
 
 [node name="Polygon2D" type="Polygon2D" parent="DestructiblePolygon2D2" unique_id=1988246406]
-polygon = PackedVector2Array(-641.333, -95.000046, -597.333, 83.666626, 578.667, 66.33328, 569.3336, -102.33338)
+polygon = PackedVector2Array(-673.54175, -633.7782, -597.333, 83.666626, 578.667, 66.33328, 579.3148, -665.2175)
 uv = PackedVector2Array(-83, -141.66635, -82.33333, 93.000336, 227.66669, 90.33365, 227.66669, -146.33301)
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=1269707993]
+position = Vector2(-108, -739)
+
+[node name="Polygon2D" type="Polygon2D" parent="StaticBody2D2" unique_id=47063705]
+polygon = PackedVector2Array(-1358.3337, -120.333015, -1373.6671, -10.99968, 1183.3335, -6.333008, 1128.0002, -110.333015)
+uv = PackedVector2Array(-1358.3337, -120.333015, -1373.6671, -10.99968, 165.66626, 1.0003204, 140.33301, -104.333015)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D2" unique_id=1745446621]
+polygon = PackedVector2Array(-1358.3337, -120.333015, -1373.6671, -10.99968, 1183.3335, -6.333008, 1128.0002, -110.333015)
+
+[node name="Player" parent="." unique_id=1119791081 instance=ExtResource("4_e0dve")]
+speed = 300.0
+jump_velocity = -400.0
+dash_speed = 800.0
+dash_duration = 0.25
+bite_radius = 32.0

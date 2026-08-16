@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cjw4grl0qg88q"]
+
+[ext_resource type="Shader" uid="uid://dyieg6mf6np6h" path="res://Assets/Shaders/GhostTerrainRenderer.gdshader" id="1_cekvy"]
+
+[resource]
+shader = ExtResource("1_cekvy")
+shader_parameter/dash_start_global = Vector2(0, 0)
+shader_parameter/dash_direction = Vector2(0, 0)
+shader_parameter/dash_length = 0.0
+shader_parameter/bite_radius = 0.0
+shader_parameter/progress = 0.0
