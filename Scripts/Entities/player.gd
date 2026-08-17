@@ -1,59 +1,71 @@
 extends CharacterBody2D
 
+enum State {
+	MOVE,
+	DASH,
+	DEAD,
+}
+
 const TERRAIN_LAYER = 1
-const DESTRUCTIBLE_LAYER = 2 # Ensure your DestructiblePolygon2D collisions are set to this layer
-const MAX_ROOM_SIZE = 4000.0 # Maximum distance to raycast for the indestructible bounds
+const DESTRUCTIBLE_LAYER = 2
+const MAX_ROOM_SIZE = 4000.0
 
 @export var speed: float = 300.0
 @export var jump_velocity: float = -400.0
 @export var dash_speed: float = 800.0
-@export var dash_duration: float = 0.25 # Base max duration if nothing is hit
+@export var dash_duration: float = 0.25
 @export var bite_radius: float = 32
 
+var current_state: State = State.MOVE
 var dash_direction: Vector2 = Vector2.ZERO
 var dash_timer: float = 0.0
-var is_dead: bool = false
 var _vfx_tween: Tween
 
 @onready var particles: Node2D = $Particles
-# Visual Pool for Web Optimization
 @onready var ghost_polygon: Polygon2D = %GhostTerrainRenderer
 
 
 func _ready() -> void:
 	particles.set("enabled", false)
 	ghost_polygon.hide()
-	ghost_polygon.top_level = true # Decouples transform from player movement
+	ghost_polygon.top_level = true
 
 
 func _process(_delta: float) -> void:
-	if is_dead:
+	if current_state == State.DEAD:
 		return
 
-	if Input.is_action_just_pressed("use_ability") and dash_timer <= 0.0:
-		_start_dash()
+	if Input.is_action_just_pressed("use_ability") and current_state == State.MOVE:
+		change_state(State.DASH)
 
 
 func _physics_process(delta: float) -> void:
-	if is_dead:
-		return
-
-	if dash_timer > 0.0:
-		_process_dash(delta)
-	else:
-		_process_normal_movement(delta)
+	match current_state:
+		State.MOVE:
+			_process_normal_movement(delta)
+		State.DASH:
+			_process_dash(delta)
+		State.DEAD:
+			pass
 
 	move_and_slide()
 
 
+func change_state(new_state: State) -> void:
+	current_state = new_state
+
+	match current_state:
+		State.DASH:
+			_start_dash()
+		State.MOVE:
+			_end_dash()
+		State.DEAD:
+			_trigger_entombment_death_logic()
+
+
 func apply_hit_stop(duration_seconds: float):
-	# Freeze the engine
 	Engine.time_scale = 0.0
-
-	# Create a timer that ignores Engine.time_scale (process_always = true, process_in_physics = false, ignore_time_scale = true)
 	await get_tree().create_timer(duration_seconds, true, false, true).timeout
-
-	# Restore normal time
 	Engine.time_scale = 1.0
 
 
@@ -73,9 +85,10 @@ func _process_normal_movement(delta: float) -> void:
 
 func _start_dash() -> void:
 	var dir := Vector2(Input.get_axis("left", "right"), Input.get_axis("up", "down")).normalized()
-	#NOTE: this code is confusing, should just default to last dir pressed.
+
 	if dir == Vector2.ZERO:
 		dir = Vector2(1.0 if velocity.x >= 0.0 else -1.0, 0.0)
+
 	dash_direction = dir
 	particles.position = dash_direction * bite_radius
 	_carve_dash_path()
@@ -86,131 +99,105 @@ func _process_dash(delta: float) -> void:
 	velocity = dash_direction * dash_speed
 
 	if dash_timer <= 0.0:
-		_end_dash()
+		change_state(State.MOVE)
 
 
 func _end_dash() -> void:
 	particles.set("enabled", false)
 	dash_timer = 0.0
 	velocity *= 0.5
-	# set_collision_mask_value(TERRAIN_LAYER, true)
-	# set_collision_mask_value(DESTRUCTIBLE_LAYER, true)
-	ghost_polygon.hide() # Reset the shader state without freeing memory
+	ghost_polygon.hide()
 
 
 func _carve_dash_path() -> void:
-	# Bypassing RayCast2D nodes for pure math direct space state (Web Optimization)
 	var space_state = get_world_2d().direct_space_state
+	var base_max_dist := dash_speed * dash_duration
 
-	# Default maximum dash distance
-	var max_dash_distance := dash_speed * dash_duration
-
-	# ---------------------------------------------------------
-	# RAYCAST 1: Find the Indestructible Wall Limit
-	# ---------------------------------------------------------
-	var query_indestructible = PhysicsRayQueryParameters2D.create(
+	# 1. Math Helper: Get distance limited by indestructible walls
+	var max_dash_distance = DashMath.get_wall_limited_distance(
+		space_state,
 		global_position,
-		global_position + (dash_direction * MAX_ROOM_SIZE),
-		1 << (TERRAIN_LAYER - 1),
+		dash_direction,
+		base_max_dist,
+		MAX_ROOM_SIZE,
+		TERRAIN_LAYER,
 	)
-	var hit_indestructible = space_state.intersect_ray(query_indestructible)
 
-	if hit_indestructible:
-		var dist_to_wall = global_position.distance_to(hit_indestructible.position)
-		# Clamp the maximum dash distance so we never cut past the indestructible bounds
-		max_dash_distance = max(max_dash_distance, dist_to_wall)
-
-	# Dynamically set the duration so the player stops exactly at the wall/limit
 	dash_timer = max_dash_distance / dash_speed
 
-	# ---------------------------------------------------------
-	# RAYCAST 2: Detect the Destructible Polygon
-	# ---------------------------------------------------------
-	var query_destructible = PhysicsRayQueryParameters2D.create(
+	# 2. Math Helper: Detect the destructible target
+	var hit = DashMath.get_destructible_hit(
+		space_state,
 		global_position,
-		global_position + (dash_direction * max_dash_distance),
-		1 << (DESTRUCTIBLE_LAYER - 1),
+		dash_direction,
+		max_dash_distance,
+		DESTRUCTIBLE_LAYER,
 	)
-	var hit_destructible = space_state.intersect_ray(query_destructible)
 
-	if hit_destructible and hit_destructible.collider is StaticBody2D:
-		var collider = hit_destructible.collider
+	if hit and hit.collider is StaticBody2D:
+		var collider = hit.collider
 		var dest: DestructiblePolygon2D = collider.get_meta("destruct_root", null)
 
 		if dest:
-			# The Polygon2D visual is the parent of the StaticBody2D
 			var target_poly = collider.get_parent() as Polygon2D
 
 			if target_poly:
-				# 1. Start the terrain ripple exactly where the raycast hit
-				_trigger_terrain_ripple(target_poly, hit_destructible.position)
+				_trigger_terrain_ripple(target_poly, hit.position)
+
 			await apply_hit_stop(0.25)
+
 			if target_poly:
 				_trigger_dash_vfx(target_poly, dash_timer, max_dash_distance)
 
-			# Build the mask to cut the entire possible distance
-			var mask := Transform2D(dash_direction.angle(), Vector2.ZERO) * PackedVector2Array(
-				[
-					Vector2(0, -bite_radius),
-					Vector2(max_dash_distance, -bite_radius),
-					Vector2(max_dash_distance, bite_radius),
-					Vector2(0, bite_radius),
-				],
-			)
+			# 3. Math Helper: Build the cutting mask
+			var mask = DashMath.build_cut_mask(dash_direction, max_dash_distance, bite_radius)
 
-			# Execute the cut instantly in the background
 			var destructed_area = dest.destruct(mask, global_position)
 
-			# ---------------------------------------------------------
-			# DEATH MATH: "Celeste Dream Goop" Check
-			# ---------------------------------------------------------
-			var carved_length = destructed_area / (bite_radius * 2.0)
-
-			# If the length of the solid dirt carved equals or exceeds our max travel distance
-			# (accounting for tiny float precision errors), we did not reach an air pocket.
-			if carved_length >= max_dash_distance - 1.0:
-				_trigger_entombment_death()
+			# 4. Math Helper: Calculate death logic
+			if DashMath.is_entombed(destructed_area, bite_radius, max_dash_distance):
+				change_state(State.DEAD)
 
 
 func _trigger_dash_vfx(target_poly: Polygon2D, duration: float, max_dist: float) -> void:
 	particles.set("enabled", true)
-	# 1. Copy visual data directly to the pool node
 	ghost_polygon.polygon = target_poly.polygon
 	ghost_polygon.uv = target_poly.uv
 	ghost_polygon.texture = target_poly.texture
 	ghost_polygon.global_transform = target_poly.global_transform
-
-	# Force the ghost polygon to tile its texture to prevent edge clamping
 	ghost_polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 
-	# 2. Update Shader Uniforms
+	# --- NEW: Copy the material dynamically ---
+	if target_poly.material:
+		ghost_polygon.material = target_poly.material.duplicate()
+
 	var mat := ghost_polygon.material as ShaderMaterial
 	if mat:
+		# Toggle the correct mechanics
+		mat.set_shader_parameter("enable_wipe", true)
+		mat.set_shader_parameter("enable_ripple", false)
+
+		# Set wipe uniforms
 		mat.set_shader_parameter("dash_start_global", global_position)
 		mat.set_shader_parameter("dash_direction", dash_direction)
 		mat.set_shader_parameter("dash_length", max_dist)
 		mat.set_shader_parameter("bite_radius", bite_radius)
 		mat.set_shader_parameter("progress", 0.0)
 
-	# 3. Reveal the ghost shell to cover the instant geometry cut
 	ghost_polygon.show()
 
-	# 4. Tween the progress from 0.0 to 1.0 over the dash duration
 	if _vfx_tween:
 		_vfx_tween.kill()
 	_vfx_tween = create_tween()
 	_vfx_tween.tween_property(mat, "shader_parameter/progress", 1.0, duration)
 
 
-func _trigger_entombment_death() -> void:
-	is_dead = true
+func _trigger_entombment_death_logic() -> void:
 	velocity = Vector2.ZERO
 	dash_timer = 0.0
 	ghost_polygon.hide()
 
 	print("Player entombed in terrain! Restarting...")
-
-	# Use call_deferred to safely reload the tree outside of the physics step
 	get_tree().call_deferred("reload_current_scene")
 
 
@@ -222,19 +209,19 @@ func _trigger_terrain_ripple(target_poly: Polygon2D, impact_world_pos: Vector2) 
 	var unique_mat = target_poly.material.duplicate()
 	target_poly.material = unique_mat
 
+	# --- NEW: Toggle the correct mechanics ---
+	unique_mat.set_shader_parameter("enable_ripple", true)
+	unique_mat.set_shader_parameter("enable_wipe", false)
+
 	unique_mat.set_shader_parameter("impact_global_position", impact_world_pos)
 	unique_mat.set_shader_parameter("size", 0.0)
-	unique_mat.set_shader_parameter("force", 50.0) # Cranked up to 50 pixels
-	unique_mat.set_shader_parameter("highlight_intensity", 0) # Over-bright flash at the start
+	unique_mat.set_shader_parameter("force", 50.0)
+	unique_mat.set_shader_parameter("highlight_intensity", 1.0) # Start bright
 	unique_mat.set_shader_parameter("thickness", 40.0)
+
 	var tween = create_tween()
 	tween.set_ignore_time_scale(true)
 
-	# Expand the ring
 	tween.tween_property(unique_mat, "shader_parameter/size", 300.0, 0.35).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
-
-	# Fade the warp force
 	tween.parallel().tween_property(unique_mat, "shader_parameter/force", 0.0, 0.35).set_ease(Tween.EASE_OUT)
-
-	# Fade the white flash quickly so it doesn't wash out the screen
 	tween.parallel().tween_property(unique_mat, "shader_parameter/highlight_intensity", 0.0, 0.25).set_ease(Tween.EASE_OUT)

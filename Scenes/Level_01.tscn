@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="5_48sdu"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="6_fmco7"]
 [ext_resource type="Script" uid="uid://nui6q5yj1nyi" path="res://Scripts/Reusable/DestructiblePolygon2D.gd" id="7_fmco7"]
-[ext_resource type="Material" uid="uid://bs24ch21mr0sl" path="res://Assets/Shaders/terrain_ripple.tres" id="8_ca1sy"]
+[ext_resource type="Material" uid="uid://fw5kwu4386y7" path="res://Assets/Shaders/DestructibleTerrain.tres" id="8_ca1sy"]
 [ext_resource type="Material" uid="uid://cjw4grl0qg88q" path="res://Assets/Shaders/GhostTerrainRenderer.tres" id="9_82yn4"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_t06ld"]

@@ -1,9 +1,0 @@
-[gd_resource type="ShaderMaterial" format=3 uid="uid://bll3gcq13wbk8"]
-
-[ext_resource type="Shader" uid="uid://dk1oi1eek2wyn" path="res://Assets/Shaders/liquid_glass.gdshader" id="1_2v1qo"]
-
-[resource]
-shader = ExtResource("1_2v1qo")
-shader_parameter/u_roundness = 1.0
-shader_parameter/u_distortion_intensity = 1.0
-shader_parameter/u_blur_intensity = 0.945

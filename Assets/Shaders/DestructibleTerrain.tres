@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://fw5kwu4386y7"]
+
+[ext_resource type="Shader" uid="uid://cxvvml6hd4a5h" path="res://Assets/Shaders/DestructibleTerrain.gdshader" id="1_lve64"]
+
+[resource]
+shader = ExtResource("1_lve64")
+shader_parameter/enable_wipe = false
+shader_parameter/enable_ripple = false
+shader_parameter/dash_start_global = Vector2(0, 0)
+shader_parameter/dash_direction = Vector2(0, 0)
+shader_parameter/dash_length = 0.0
+shader_parameter/bite_radius = 0.0
+shader_parameter/progress = 0.0
+shader_parameter/impact_global_position = Vector2(0, 0)
+shader_parameter/force = 0.0
+shader_parameter/size = 0.0
+shader_parameter/thickness = 40.0
+shader_parameter/highlight_intensity = 0.0
