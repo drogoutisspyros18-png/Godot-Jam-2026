@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bs24ch21mr0sl"]
+
+[ext_resource type="Shader" uid="uid://shyxg5u7a76e" path="res://Assets/Shaders/terrain_ripple.gdshader" id="1_52wax"]
+
+[resource]
+shader = ExtResource("1_52wax")
+shader_parameter/impact_global_position = Vector2(0, 0)
+shader_parameter/force = 0.81
+shader_parameter/size = 0.59
+shader_parameter/thickness = 0.85
+shader_parameter/highlight_intensity = 0.0

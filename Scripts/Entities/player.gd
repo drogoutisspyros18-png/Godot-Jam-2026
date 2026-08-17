@@ -138,9 +138,13 @@ func _carve_dash_path() -> void:
 		var dest: DestructiblePolygon2D = collider.get_meta("destruct_root", null)
 
 		if dest:
-			await apply_hit_stop(0.125)
 			# The Polygon2D visual is the parent of the StaticBody2D
 			var target_poly = collider.get_parent() as Polygon2D
+
+			if target_poly:
+				# 1. Start the terrain ripple exactly where the raycast hit
+				_trigger_terrain_ripple(target_poly, hit_destructible.position)
+			await apply_hit_stop(0.25)
 			if target_poly:
 				_trigger_dash_vfx(target_poly, dash_timer, max_dash_distance)
 
@@ -170,11 +174,14 @@ func _carve_dash_path() -> void:
 
 func _trigger_dash_vfx(target_poly: Polygon2D, duration: float, max_dist: float) -> void:
 	particles.set("enabled", true)
-	# 1. Copy visual data directly to the pool node (no instantiation)
+	# 1. Copy visual data directly to the pool node
 	ghost_polygon.polygon = target_poly.polygon
 	ghost_polygon.uv = target_poly.uv
 	ghost_polygon.texture = target_poly.texture
 	ghost_polygon.global_transform = target_poly.global_transform
+
+	# Force the ghost polygon to tile its texture to prevent edge clamping
+	ghost_polygon.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 
 	# 2. Update Shader Uniforms
 	var mat := ghost_polygon.material as ShaderMaterial
@@ -205,3 +212,29 @@ func _trigger_entombment_death() -> void:
 
 	# Use call_deferred to safely reload the tree outside of the physics step
 	get_tree().call_deferred("reload_current_scene")
+
+
+func _trigger_terrain_ripple(target_poly: Polygon2D, impact_world_pos: Vector2) -> void:
+	if not target_poly.material is ShaderMaterial:
+		push_warning("Target polygon does not have a ShaderMaterial assigned.")
+		return
+
+	var unique_mat = target_poly.material.duplicate()
+	target_poly.material = unique_mat
+
+	unique_mat.set_shader_parameter("impact_global_position", impact_world_pos)
+	unique_mat.set_shader_parameter("size", 0.0)
+	unique_mat.set_shader_parameter("force", 50.0) # Cranked up to 50 pixels
+	unique_mat.set_shader_parameter("highlight_intensity", 0) # Over-bright flash at the start
+	unique_mat.set_shader_parameter("thickness", 40.0)
+	var tween = create_tween()
+	tween.set_ignore_time_scale(true)
+
+	# Expand the ring
+	tween.tween_property(unique_mat, "shader_parameter/size", 300.0, 0.35).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+
+	# Fade the warp force
+	tween.parallel().tween_property(unique_mat, "shader_parameter/force", 0.0, 0.35).set_ease(Tween.EASE_OUT)
+
+	# Fade the white flash quickly so it doesn't wash out the screen
+	tween.parallel().tween_property(unique_mat, "shader_parameter/highlight_intensity", 0.0, 0.25).set_ease(Tween.EASE_OUT)

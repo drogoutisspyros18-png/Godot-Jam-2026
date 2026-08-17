@@ -15,22 +15,41 @@ void vertex() {
 }
 
 void fragment() {
-	// Get the vector from the dash starting point to this specific pixel
+	// ---------------------------------------------------------
+	// 1. THE WIPE LOGIC
+	// ---------------------------------------------------------
 	vec2 diff = world_position - dash_start_global;
-	
-	// Project that vector to find how far forward (along the dash) this pixel is
 	float dist_along = dot(diff, dash_direction);
-	
-	// Find the orthogonal distance to see how far sideways this pixel is from the center line
 	vec2 projection = dash_direction * dist_along;
 	float dist_side = length(diff - projection);
 	
-	// Check if this pixel lives inside the carved rectangle
 	bool inside_tunnel = (dist_side <= bite_radius) && (dist_along >= 0.0) && (dist_along <= dash_length);
 	
-// If it is inside the tunnel, and the player's progress has passed it, erase it
 	// Adding bite_radius pushes the discard threshold forward to uncover the whole sprite
 	if (inside_tunnel && dist_along <= (progress * dash_length) + bite_radius) {
 		discard;
 	}
+
+	// ---------------------------------------------------------
+	// 2. THE JELLO GOOP (Syncs perfectly with the live terrain)
+	// ---------------------------------------------------------
+	vec2 goop_uv = world_position * 0.015; 
+	float t = TIME * 4.0;
+	
+	float wave = sin(goop_uv.x + t) 
+			   + sin(goop_uv.y + t * 0.8) 
+			   + sin((goop_uv.x + goop_uv.y) * 1.5 + t * 1.2) 
+			   + sin(length(goop_uv) * 2.0 - t * 2.0);
+			   
+	vec3 goop_color = vec3(
+		sin(wave * 0.5) * 0.5 + 0.5,
+		sin(wave * 0.3 + 2.0) * 0.5 + 0.5,
+		sin(wave * 0.6 + 4.0) * 0.5 + 0.8
+	);
+	
+	// Grab the base texture
+	vec4 tex_color = texture(TEXTURE, UV);
+	
+	// Output the combined color so the ghost shell perfectly mimics the live terrain
+	COLOR = vec4(goop_color * tex_color.rgb, tex_color.a);
 }

@@ -322,6 +322,7 @@ func _update_or_create(polygon_2d, polygon, size, new):
 		call_deferred('add_child', polygon_2d)
 
 	polygon_2d.polygon = polygon
+	polygon_2d.uv = polygon
 
 	if _has_been_collidable:
 		# FIX 2: Use set_deferred to queue the physics update safely for the end of the frame.

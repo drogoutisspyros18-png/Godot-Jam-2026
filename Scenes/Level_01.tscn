@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="5_48sdu"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="6_fmco7"]
 [ext_resource type="Script" uid="uid://nui6q5yj1nyi" path="res://Scripts/Reusable/DestructiblePolygon2D.gd" id="7_fmco7"]
+[ext_resource type="Material" uid="uid://bs24ch21mr0sl" path="res://Assets/Shaders/terrain_ripple.tres" id="8_ca1sy"]
 [ext_resource type="Material" uid="uid://cjw4grl0qg88q" path="res://Assets/Shaders/GhostTerrainRenderer.tres" id="9_82yn4"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_t06ld"]
@@ -49,7 +50,6 @@ top_level = true
 script = ExtResource("5_48sdu")
 follow_mode = 5
 follow_target = NodePath("../Player")
-snap_to_pixel = true
 tween_resource = SubResource("Resource_2jryf")
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
 
@@ -61,6 +61,9 @@ collision_layer = 2
 metadata/_custom_type_script = "uid://nui6q5yj1nyi"
 
 [node name="Polygon2D" type="Polygon2D" parent="PixelCanvasGroup/DestructiblePolygon2D2" unique_id=1988246406]
+texture_repeat = 2
+material = ExtResource("8_ca1sy")
+color = Color(0.3515629, 0.3515629, 0.35156286, 1)
 polygon = PackedVector2Array(-673.54175, -633.7782, -597.333, 83.666626, 578.667, 66.33328, 579.3148, -665.2175)
 uv = PackedVector2Array(-83, -141.66635, -82.33333, 93.000336, 227.66669, 90.33365, 227.66669, -146.33301)
 
